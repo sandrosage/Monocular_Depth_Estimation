@@ -1,0 +1,13 @@
+#midas
+torchvision
+torch
+numpy
+timm==0.6.7
+opencv-python
+einops==0.6.0
+openvino
+#segmentator
+onnxruntime
+# other
+matplotlib
+scipy

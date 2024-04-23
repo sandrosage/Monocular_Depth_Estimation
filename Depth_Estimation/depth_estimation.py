@@ -192,13 +192,18 @@ class MonoDepth2(DepthEstimator):
 
 
 class DPT(DepthEstimator):
-    def __init__(self, device, model_type, optimize=True):
+    def __init__(self, device, model_type, optimize=True, to_metric=True):
+        self.first_aligning_run = True
+        self.disparity_cap = 1.0 / 80
         self.optimize = optimize
         self.device = device
         model_path = dpt_default_models[model_type]
         model_path = "Depth_Estimation/DPT/" + model_path
         self.model_type = model_type
         self.model, self.transform, self.net_w, self.net_h = load_dpt_model(device, model_type, model_path, optimize)
+        if to_metric:
+            self.first_aligning_run = True
+            self.scale, self.translation = self.compute_scale_and_shift()
     
     def _forward(self, sample, target_size):
         prediction = self.model.forward(sample)
@@ -235,8 +240,77 @@ class DPT(DepthEstimator):
                 sample = sample.half()
 
             prediction = self._forward(sample, img_rgb.shape[:2])
+
+            if not self.first_aligning_run:
+                    prediction[prediction < 0] = 0
+                    prediction_aligned = self.scale * prediction + self.translation
+                    prediction_aligned[prediction_aligned < self.disparity_cap] = self.disparity_cap
+                    prediction = prediction_aligned
             return prediction
 
+    def compute_scale_and_shift(self):
+        """
+        Computes and sets the scale and shift for the aligned prediction
+        -> is needed when performing metric depth instead of relative depth
+        """
+        # 1. Load the ground truth data from the kitti dataset
+        depth_map, mask = depth_read("depth_selection/val_selection_cropped/groundtruth_depth/2011_10_03_drive_0047_sync_groundtruth_depth_0000000791_image_03.png")
+        # 2. Transform the absolute grouth truth depth into disparity
+        target_disparity = np.zeros_like(depth_map)
+        target_disparity[mask == 1] = 1.0 / depth_map[mask == 1]
+        # 3. Flatten the disparity for alignment
+        target_disparity_flatten = target_disparity.flatten()
+        # 4. Get the not yet aligned prediction of the model
+        prediction = self.predict("depth_selection/val_selection_cropped/image/2011_10_03_drive_0047_sync_image_0000000791_image_03.png")
+        prediction[prediction < 0] = 0
+        # 5. Flatten the prediction
+        prediction_flatten = prediction.flatten()
+        # 6. Only choose the points where we exactly know the depth/disparity
+        points = np.where(target_disparity_flatten != 0)[0]
+        # 7. Calculate and align the prediction
+        s,t = self.small_alignment(d=prediction_flatten, d_star=target_disparity_flatten, points=points)
+        aligned_prediction = s*prediction + t
+        aligned_prediction[aligned_prediction < self.disparity_cap] = self.disparity_cap
+        # 8. Transform the disparity predition into metric depth
+        aligned_prediction_inverted = 1.0 / aligned_prediction
+        print(aligned_prediction_inverted.max())
+        print(aligned_prediction_inverted.min())
+        # visualize and store all the intermediate steps
+        store_path = "assets/DPT/" + self.model_type
+        store_depth(target_disparity, store_path + "_target_disparity")
+        store_depth(depth_map, store_path + "_detph_map")
+        store_depth(aligned_prediction, store_path + "_aligned_prediction")
+        store_depth(aligned_prediction_inverted, store_path + "_metric_depth")
+        store_depth(prediction, store_path +  "_prediction")
+        # store_depth(target_disparity, store_path + "_target_disparity", format="pgf")
+        # store_depth(depth_map, store_path + "_detph_map", format="pgf")
+        # store_depth(aligned_prediction, store_path + "_aligned_prediction", format="pgf")
+        # store_depth(aligned_prediction_inverted, store_path + "_metric_depth", format="pgf")
+        # store_depth(prediction, store_path +  "_prediction", format="pgf")
+        self.first_aligning_run = False
+        return s,t
+    def small_alignment(self, d, d_star, points):
+            """
+            Calulate the shift and translation from the alignment
+            This follows the caluclation part in the MiDaS paper
+
+            Args:
+                - d: disparity prediction
+                - d_star: ground truth disparity
+                - points: the points to align (where we definitely know the metric depth)
+            """
+            sum_1 = 0
+            sum_2 = 0
+            for i in points:
+                di = np.array([
+                    [d[i]],
+                    [1]
+                ])
+                di_star = np.array([d_star[i]])
+                sum_1 += np.matmul(di, di.transpose())
+                sum_2 += np.matmul(di,di_star)
+                h_opt = np.matmul(np.linalg.pinv(sum_1),sum_2)
+            return h_opt
 class ZoeDepth(DepthEstimator):
     def __init__(self, device, model_type):
         if not (model_type in zoe_model_types):

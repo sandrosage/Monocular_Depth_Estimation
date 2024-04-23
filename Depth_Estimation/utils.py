@@ -171,11 +171,12 @@ def store_depth(depth, path, format="png"):
         - path: output path 
         - format (default="png"): format of image -> "pgf" for latex support
     """
-    if format == "png":
-        path = path + ".png"
-    elif format == "pgf":
-        path = path + ".pgf"
     plt.imshow(depth)
     plt.colorbar(orientation="horizontal")
-    plt.savefig(path, dpi=600, format=format)
+    if format == "png":
+        path = path + ".png"
+        plt.savefig(path, dpi=1000, format=format)
+    elif format == "pgf":
+        path = path + ".pgf"
+        plt.savefig(path, backend="pgf", dpi=1000)
     plt.clf()

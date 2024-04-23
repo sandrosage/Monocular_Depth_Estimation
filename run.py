@@ -5,6 +5,9 @@ from data_handler import InputHandler
 import torch 
 import argparse
 import os
+import matplotlib as mpl
+# Use the pgf backend (must be set before pyplot imported)
+mpl.use('pgf')
 
 # check if cuda is available otherwise use cpu
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -34,10 +37,10 @@ if args.estimator_type == "Mono2":
     depth_estimator = MonoDepth2(device=device, model_name="mono+stereo_640x192")
 
 elif args.estimator_type == "MiDaS":
-    depth_estimator = MiDaS(device=device, model_type="midas_v21_384", optimize=False)
+    depth_estimator = MiDaS(device=device, model_type="dpt_beit_large_384", optimize=False)
 
 elif args.estimator_type == "DPT":
-    depth_estimator = DPT(device=device, model_type="dpt_hybrid_kitti")
+    depth_estimator = DPT(device=device, model_type="dpt_hybrid")
 
 elif args.estimator_type == "ZoeDepth":
     depth_estimator = ZoeDepth(device=device, model_type="ZoeD_K")

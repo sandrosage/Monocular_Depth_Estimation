@@ -1,7 +1,7 @@
 # useful functions for input/output handling + necessary output for latex
 import matplotlib.pyplot as plt
 
-def store_depth(depth, path, format="png"):
+def store_depth(depth, path, format="png", flag=None):
     """
     Storing of depth maps in matplotlib.pyplot
 
@@ -10,11 +10,15 @@ def store_depth(depth, path, format="png"):
         - path: output path 
         - format (default="png"): format of image -> "pgf" for latex support
     """
-    if format == "png":
-        path = path + ".png"
-    elif format == "pgf":
-        path = path + ".pgf"
     plt.imshow(depth)
     plt.colorbar(orientation="horizontal")
-    plt.savefig(path, dpi=600, format=format)
+    if format == "png":
+        new_path = path + ".png"
+        if not flag is None:
+            new_path = path +  "_" + flag + ".png"
+            plt.text(20 , depth.shape[0] - 20 , flag , color='white', fontsize=8, fontweight='bold')
+        plt.savefig(new_path, dpi=1000, format=format, bbox_inches="tight")
+    elif format == "pgf":
+        path = path + ".pgf"
+        plt.savefig(path, backend="pgf", dpi=1000)
     plt.clf()

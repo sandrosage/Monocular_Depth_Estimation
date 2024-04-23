@@ -87,7 +87,6 @@ class MiDaS(DepthEstimator):
 
                 prediction = self._forward(sample, target_size)
                 if not self.first_aligning_run:
-                    print("hello")
                     prediction[prediction < 0] = 0
                     prediction_aligned = self.scale * prediction + self.translation
                     prediction_aligned[prediction_aligned < self.disparity_cap] = self.disparity_cap
@@ -104,32 +103,28 @@ class MiDaS(DepthEstimator):
         # 2. Transform the absolute grouth truth depth into disparity
         target_disparity = np.zeros_like(depth_map)
         target_disparity[mask == 1] = 1.0 / depth_map[mask == 1]
-        # visualize it for paper
-        store_depth(target_disparity, "midas_target_disparity")
-        store_depth(depth_map, "midas_detph_map")
         # 3. Flatten the depth and disparity for alignment
-        depth_map = depth_map.flatten()
-        target_disparity = target_disparity.flatten()
+        target_disparity_flatten = target_disparity.flatten()
         # 4. Get the not yet aligned prediction of the model
         prediction = self.predict("depth_selection/val_selection_cropped/image/2011_10_03_drive_0047_sync_image_0000000791_image_03.png")
         prediction[prediction < 0] = 0
-        # visualize the prediction
-        store_depth(prediction, "midas_prediction")
         # 5. Flatten the prediction
         prediction_flatten = prediction.flatten()
         # 6. Only choose the points where we exactly know the depth/disparity
-        points = np.where(target_disparity != 0)[0]
+        points = np.where(target_disparity_flatten != 0)[0]
         # 7. Calculate and align the prediction
-        s,t = self.small_alignment(d=prediction_flatten, d_star=target_disparity, points=points)
+        s,t = self.small_alignment(d=prediction_flatten, d_star=target_disparity_flatten, points=points)
         aligned_prediction = s*prediction + t
         aligned_prediction[aligned_prediction < self.disparity_cap] = self.disparity_cap
         # 8. Transform the disparity predition into metric depth
         aligned_prediction_inverted = 1.0 / aligned_prediction
-        print(aligned_prediction_inverted.max())
-        print(aligned_prediction_inverted.min())
         # visualize the metric depth and the aligned disparity
-        store_depth(aligned_prediction, "midas_aligned_prediction")
-        store_depth(aligned_prediction_inverted, "midas_metric_depth")
+        store_path = "assets/MiDaS/" + self.model_type
+        store_depth(target_disparity, store_path + "_target_disparity")
+        store_depth(depth_map, store_path + "_detph_map")
+        store_depth(aligned_prediction, store_path + "_aligned_prediction")
+        store_depth(aligned_prediction_inverted, store_path + "_metric_depth")
+        store_depth(prediction, store_path +  "_prediction")
         self.first_aligning_run = False
         return s,t
     
@@ -201,6 +196,8 @@ class DPT(DepthEstimator):
         model_path = "Depth_Estimation/DPT/" + model_path
         self.model_type = model_type
         self.model, self.transform, self.net_w, self.net_h = load_dpt_model(device, model_type, model_path, optimize)
+        if self.model_type == "dpt_hybrid_kitti":
+            to_metric = False
         if to_metric:
             self.first_aligning_run = True
             self.scale, self.translation = self.compute_scale_and_shift()
@@ -219,8 +216,9 @@ class DPT(DepthEstimator):
             .numpy()
         )
 
-        if self.model_type == "dpt_hybrid_kitti":
-            prediction *= 256
+        # if self.model_type == "dpt_hybrid_kitti":
+        #     # prediction *= 256
+        #     print("hello")
 
         if self.model_type == "dpt_hybrid_nyu":
             prediction *= 1000.0
@@ -245,7 +243,7 @@ class DPT(DepthEstimator):
                     prediction[prediction < 0] = 0
                     prediction_aligned = self.scale * prediction + self.translation
                     prediction_aligned[prediction_aligned < self.disparity_cap] = self.disparity_cap
-                    prediction = prediction_aligned
+                    prediction = 1.0 / prediction_aligned
             return prediction
 
     def compute_scale_and_shift(self):
@@ -273,8 +271,6 @@ class DPT(DepthEstimator):
         aligned_prediction[aligned_prediction < self.disparity_cap] = self.disparity_cap
         # 8. Transform the disparity predition into metric depth
         aligned_prediction_inverted = 1.0 / aligned_prediction
-        print(aligned_prediction_inverted.max())
-        print(aligned_prediction_inverted.min())
         # visualize and store all the intermediate steps
         store_path = "assets/DPT/" + self.model_type
         store_depth(target_disparity, store_path + "_target_disparity")

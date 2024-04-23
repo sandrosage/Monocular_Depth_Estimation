@@ -15,6 +15,8 @@ class PerformanceTimer:
     def __init__(self):
         self.infer_times = np.array([])
         self.stats = {}
+        self.first_calibration_run = True
+        self.division_factor = 1e6
     
     def get_statistics(self):
         """
@@ -41,7 +43,21 @@ class PerformanceTimer:
         Additionaly stores the duration of start and end tracking time
         """
         try:
-            process_time = (time.time_ns() - self.current_tstamp) / 1e6
+            if self.first_calibration_run:
+                print("Calibrate PerformanceTimer--")
+                process_time = (time.time_ns() - self.current_tstamp) / self.division_factor
+                print(process_time)
+                if process_time > 1000:
+                    self.division_factor = 1e9
+                    process_time = process_time / 1e3
+                self.first_calibration_run = False
+            else:
+                process_time = (time.time_ns() - self.current_tstamp) / self.division_factor
+            
+            if self.division_factor == 1e6:
+                print("Exec. time:", process_time, "ms")
+            else:
+                print("Exec. time:", process_time, "s")
             self.infer_times = np.append(self.infer_times,process_time)
         except Exception as e:
             print(e)
@@ -68,7 +84,10 @@ class PerformanceTimer:
         plt.legend(loc="upper right")
         plt.title(flag)
         plt.xlabel('Index')
-        plt.ylabel('Inference time in (ms)')
+        if self.division_factor == 1e6:
+            plt.ylabel('Inference time in (ms)')
+        else:
+            plt.ylabel('Inference time in (s)')
         plt.grid(True)
         if store:
             if not os.path.exists(os.path.join(path,"statistics")):
@@ -149,7 +168,7 @@ class Processor:
             self.p_timer_depth.end_session()
             base_name = os.path.splitext(img_path)[0]
             output_path = os.path.join(self.ih.get_output_path_depth(), os.path.basename(base_name))
-            io_utils.store_depth(depth=depth, path=output_path)
+            io_utils.store_depth(depth=depth, path=output_path, flag=self.estimator_type)
 
         
         if self.use_depth and self.use_seg:
@@ -163,7 +182,9 @@ class Processor:
         Processes all the images in a given directory
         """
         #print("Process dir")
-        for image_path in self.ih.get_images():
+        max_i = len(self.ih.get_images())
+        for i, image_path in enumerate(self.ih.get_images()):
+            print("Process " + str(i+1) + "/" + str(max_i) + " --> " + image_path)
             self.process_image(image_path)
 
     def process_camera(self):

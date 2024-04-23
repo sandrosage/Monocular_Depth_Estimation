@@ -175,8 +175,10 @@ def store_depth(depth, path, format="png"):
     plt.colorbar(orientation="horizontal")
     if format == "png":
         path = path + ".png"
-        plt.savefig(path, dpi=1000, format=format)
+        plt.savefig(path, dpi=1000, format=format, bbox_inches="tight")
     elif format == "pgf":
         path = path + ".pgf"
         plt.savefig(path, backend="pgf", dpi=1000)
     plt.clf()
+
+    

@@ -16,7 +16,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 parser = argparse.ArgumentParser()
 
 # add arguments to the parser
-parser.add_argument("-i","--input", help="Path to image, input directory or video file", required=False, default="depth_selection/val_selection_cropped/image/2011_10_03_drive_0047_sync_image_0000000791_image_03.png")
+parser.add_argument("-i","--input", help="Path to image, input directory or video file", required=False, default="input/images/")
 parser.add_argument("-o", "--output", help="Path to the output folder", required=False, default="output/images")
 parser.add_argument("-et", "--estimator_type", help="Estimator model for the depth estimation", choices=["Mono2","MiDaS", "ZoeDepth", "DPT", None], required=False, default="Mono2")
 parser.add_argument("-emt", "--estimator_model_type", help="which kind of model type should be used", choices=["small", "medium", "large", None], required=False, default="medium")
@@ -27,6 +27,9 @@ args = parser.parse_args()
 
 segmentator = None
 depth_estimator = None
+midas_model_list = ["dpt_swin2_tiny_256", "midas_v21_384", "dpt_beit_large_384"]
+dpt_model_list = ["dpt_hybrid", "dpt_hybrid_kitti", "dpt_large"]
+zoe_model_list = ["ZoeD_N", "ZoeD_K", "ZoeD_NK"]
 
 # if segmentator flag is set then load the segmentator
 if args.seg:
@@ -34,24 +37,28 @@ if args.seg:
 
 # if estimator_type is set then load the estimator accordingly depending which type should be used
 if args.estimator_type == "Mono2":
-    depth_estimator = MonoDepth2(device=device, model_name="mono+stereo_640x192")
+    model_type = "mono+stereo_640x192"
+    depth_estimator = MonoDepth2(device=device, model_name=model_type)
 
 elif args.estimator_type == "MiDaS":
-    depth_estimator = MiDaS(device=device, model_type="dpt_beit_large_384", optimize=False)
+    model_type = midas_model_list[2]
+    depth_estimator = MiDaS(device=device, model_type=model_type, optimize=False)
 
 elif args.estimator_type == "DPT":
-    depth_estimator = DPT(device=device, model_type="dpt_hybrid")
+    model_type =dpt_model_list[1]
+    depth_estimator = DPT(device=device, model_type=model_type)
 
 elif args.estimator_type == "ZoeDepth":
-    depth_estimator = ZoeDepth(device=device, model_type="ZoeD_K")
+    model_type = "ZoeD_K"
+    depth_estimator = ZoeDepth(device=device, model_type=model_type)
 
-print("Using:", args.estimator_type)
+print("Using:", args.estimator_type + "_" + model_type)
 
 # initialize the InputHandler accordingly with input/output arguments
-ih = InputHandler(input_path=args.input, output_path_depth=os.path.join(args.output, args.estimator_type), output_path_seg=args.output)
+ih = InputHandler(input_path=args.input, output_path_depth=os.path.join(args.output, args.estimator_type, model_type), output_path_seg=args.output)
 
 # initialize the Processor accordingly with segmentator, depth estimator and estimator type
-processor = Processor(ih=ih, segmentator=segmentator, depth_estimator=depth_estimator, estimator_type=args.estimator_type)
+processor = Processor(ih=ih, segmentator=segmentator, depth_estimator=depth_estimator, estimator_type=args.estimator_type + "_" + model_type)
 
 # process the input data
 processor.process()

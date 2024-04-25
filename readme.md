@@ -1,4 +1,4 @@
-## Segmentation-guided Monocular Metric Depth Estimation
+## SMMetrD:Segmentation-guided Monocular Metric Depth Estimation
 
 This repository contains the implementation of processing an image or a directory of images for segmentation and metric depth estimation. It accompanies several depth models developed by the following papers:
 
@@ -24,6 +24,9 @@ For further informations and how to work with the models itself, refer to the or
 [^2]: https://github.com/isl-org/MiDaS
 [^3]: https://github.com/isl-org/DPT
 [^4]: https://github.com/isl-org/ZoeDepth
+
+[here](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/DeepLabV3Plus_resnet50.onnx
+)
 
 ### Setup 
 1) Clone the main repository and its submodules:

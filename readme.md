@@ -1,4 +1,4 @@
-## SMMetrD:Segmentation-guided Monocular Metric Depth Estimation
+## SMMetrD: Segmentation-guided Monocular Metric Depth Estimation
 
 This repository contains the implementation of processing an image or a directory of images for segmentation and metric depth estimation. It accompanies several depth models developed by the following papers:
 
@@ -35,8 +35,10 @@ For further informations and how to work with the models itself, refer to the or
 2) Pick one of the estimator types and download the weights
   - Monodepth2: automatically downloads the weights in the first run
   - MiDaS and DPT: download the model from their repositories and store them inside the `weights` folder in the correct directory (e.g. `Depth_Estimation/MiDaS/weights`) 
-  --> DPT: [dpt_hybrid](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid-midas-501f0c75.pt), [dpt_hybrid_kitti](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid_kitti-cb926ef4.pt)
-  --> MiDaS: [dpt_swin2_tiny_256](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_swin2_tiny_256.pt), [midas_v21_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/midas_v21_384.pt), [dpt_beil_large_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_beit_large_384.pt)
+
+  &rarr DPT: [dpt_hybrid](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid-midas-501f0c75.pt), [dpt_hybrid_kitti](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid_kitti-cb926ef4.pt)
+  
+  &rarr MiDaS: [dpt_swin2_tiny_256](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_swin2_tiny_256.pt), [midas_v21_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/midas_v21_384.pt), [dpt_beil_large_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_beit_large_384.pt)
   - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
 
 3) Download the segmentator model weights from [here](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/DeepLabV3Plus_resnet50.onnx)

@@ -60,6 +60,7 @@ Powershell:
  
 3) The resulting depth maps are written to the `output/images` folder. For each of the estimator types there exists a subdirectory where all the depth maps are stored. The depth maps are accordingly named by their input image name and their specific model type. Additionally the segmented image and the mean metric depth per segmented object is stored in a `*_mean_depth_per_object.csv`. This file contains the class name and the mean metric depth in asceding order of the depth.
 
-### License 
-
-MIT License 
+### 👩‍⚖️ License
+Copyright © Sandro Sage.
+All rights reserved.
+Please see the [license file](LICENSE) for terms.

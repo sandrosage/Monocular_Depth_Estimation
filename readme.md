@@ -27,7 +27,13 @@ The figure below shows an overview of the different MiDaS models; the bubble siz
 
 #### Github references
 - Monodepth2 [^1]
-[^1]: hello
+- MiDaS [^2]
+- DPT [^3]
+- ZoeDepth [^4]
+[^1]: https://github.com/nianticlabs/monodepth2
+[^2]: https://github.com/isl-org/MiDaS
+[^3]: https://github.com/isl-org/DPT
+[^4]: https://github.com/isl-org/ZoeDepth
 - For highest quality: [dpt_beit_large_512](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_beit_large_512.pt)
 - For moderately less quality, but better speed-performance trade-off: [dpt_swin2_large_384](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_swin2_large_384.pt)
 - For embedded devices: [dpt_swin2_tiny_256](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_swin2_tiny_256.pt), [dpt_levit_224](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_levit_224.pt)

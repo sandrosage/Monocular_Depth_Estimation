@@ -12,13 +12,6 @@ This repository contains code to compute depth from a single image, a directory 
 
 [ZoeDepth: Zero-shot Transfer by Combining Relative and Metric Depth](https://arxiv.org/pdf/2302.12288.pdf)
 
-### Setup 
-
-1) Pick one of the estimator types and download the weights
-  - Monodepth2: automatically downloads the weights in the first run
-  - MiDaS and DPT: download the model from their repositories and store them inside the `weights` folder in the correct directory (e.g. `Depth_Estimation/MiDaS/weights`)
-  - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
-
 #### Github references
 
 For further informations and how to work with the models itself, refer to the original github repositories below.
@@ -32,8 +25,15 @@ For further informations and how to work with the models itself, refer to the or
 [^3]: https://github.com/isl-org/DPT
 [^4]: https://github.com/isl-org/ZoeDepth
 
+### Setup 
 
-1) Set up dependencies: 
+1) Pick one of the estimator types and download the weights
+  - Monodepth2: automatically downloads the weights in the first run
+  - MiDaS and DPT: download the model from their repositories and store them inside the `weights` folder in the correct directory (e.g. `Depth_Estimation/MiDaS/weights`)
+  - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
+
+
+2) Set up dependencies: 
 
 Powershell:
 
@@ -54,7 +54,7 @@ Powershell:
    ````
    where `<estimator_type>` is chosen from `[Mono2, MiDaS, DPT, ZoeDepth]`. If the `-s` flag is set, the image is also segmentated.
  
-3) The resulting depth maps are written to the `output/images` folder. For each of the estimator types there exists a subdirectory where all the depth maps are stored. The depth maps are accordingly named by their input image name and their specific model type.
+3) The resulting depth maps are written to the `output/images` folder. For each of the estimator types there exists a subdirectory where all the depth maps are stored. The depth maps are accordingly named by their input image name and their specific model type. Additionally the segmented image and the mean metric depth per segmented object is stored in a `*_mean_depth_per_object.csv`. This file contains the class name and the mean metric depth in asceding order of the depth.
 
 ### License 
 

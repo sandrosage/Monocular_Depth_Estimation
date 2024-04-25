@@ -1,4 +1,4 @@
-## Segmentation-guided Monocular Depth Estimation with Metric Depth for ressource-constraint devices
+## Segmentation-guided Monocular Metric Depth Estimation
 
 This repository contains code to compute depth from a single image, a directory of images and a single video. It accompanies several depth models developed by the following papers:
 

@@ -26,7 +26,7 @@ The figure below shows an overview of the different MiDaS models; the bubble siz
   - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
 
 #### Github references
-- Monodepth2 [^1](https://github.com/nianticlabs/monodepth2) 
+- Monodepth2 [^1]
 - For highest quality: [dpt_beit_large_512](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_beit_large_512.pt)
 - For moderately less quality, but better speed-performance trade-off: [dpt_swin2_large_384](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_swin2_large_384.pt)
 - For embedded devices: [dpt_swin2_tiny_256](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_swin2_tiny_256.pt), [dpt_levit_224](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_levit_224.pt)

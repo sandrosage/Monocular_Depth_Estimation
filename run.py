@@ -40,7 +40,7 @@ if args.estimator_type == "Mono2":
     depth_estimator = MonoDepth2(device=device, model_name=model_type)
 
 elif args.estimator_type == "MiDaS":
-    model_type = midas_model_list[1]
+    model_type = midas_model_list[0]
     depth_estimator = MiDaS(device=device, model_type=model_type, optimize=False)
 
 elif args.estimator_type == "DPT":

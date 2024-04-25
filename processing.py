@@ -281,6 +281,7 @@ class Processor:
         mean_depths = {}
         f = open(file_path, "w", newline="")
         writer = csv.writer(f)
+        writer.writerow(["class_name", "mean_depth"])
 
         for key, value in self.segmentation_masks.items():
             resized_mask = cv2.resize(value, (depth.shape[1], depth.shape[0]), interpolation=cv2.INTER_NEAREST)

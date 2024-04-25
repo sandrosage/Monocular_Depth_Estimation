@@ -12,13 +12,6 @@ This repository contains code to compute depth from a single image, a directory 
 
 [ZoeDepth: Zero-shot Transfer by Combining Relative and Metric Depth](https://arxiv.org/pdf/2302.12288.pdf)
 
-MiDaS was trained on up to 12 datasets (ReDWeb, DIML, Movies, MegaDepth, WSVD, TartanAir, HRWSI, ApolloScape, BlendedMVS, IRS, KITTI, NYU Depth V2) with
-multi-objective optimization. 
-The original model that was trained on 5 datasets  (`MIX 5` in the paper) can be found [here](https://github.com/isl-org/MiDaS/releases/tag/v2).
-The figure below shows an overview of the different MiDaS models; the bubble size scales with number of parameters.
-
-![](figures/Improvement_vs_FPS.png)
-
 ### Setup 
 
 1) Pick one of the estimator types and download the weights
@@ -57,13 +50,8 @@ Powershell:
 2) Run the model with
 
    ```shell
-   python run.py --model_type <model_type> --input_path input --output_path output
-   ```
-   where ```<estimator_type>``` is chosen from [dpt_beit_large_512](#model_type), [dpt_beit_large_384](#model_type),
-   [dpt_beit_base_384](#model_type), [dpt_swin2_large_384](#model_type), [dpt_swin2_base_384](#model_type),
-   [dpt_swin2_tiny_256](#model_type), [dpt_swin_large_384](#model_type), [dpt_next_vit_large_384](#model_type),
-   [dpt_levit_224](#model_type), [dpt_large_384](#model_type), [dpt_hybrid_384](#model_type),
-   [midas_v21_384](#model_type), [midas_v21_small_256](#model_type), [openvino_midas_v21_small_256](#model_type).
+   python run.py -et <model_type> -s
+   where ```<estimator_type>``` is chosen from `[Mono2, MiDaS, DPT, ZoeDepth]`. If the `-s` flag is set, the image is also segmentated.
  
 3) The resulting depth maps are written to the `output/images` folder. For each of the estimator types there exists a subdirectory where all the depth maps are stored. The depth maps are accordingly named by their input image name and their specific model type.
 

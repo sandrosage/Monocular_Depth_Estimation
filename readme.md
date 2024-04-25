@@ -37,6 +37,11 @@ For further informations and how to work with the models itself, refer to the or
 
 Powershell:
 
+```shell
+    conda env create -f environment.yaml
+    conda activate midas-py310
+    ```
+
     ```shell
     python -m venv venv
     .\venv\Scripts\activate

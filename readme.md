@@ -25,8 +25,6 @@ For further informations and how to work with the models itself, refer to the or
 [^3]: https://github.com/isl-org/DPT
 [^4]: https://github.com/isl-org/ZoeDepth
 
-[here](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/DeepLabV3Plus_resnet50.onnx
-)
 
 ### Setup 
 1) Clone the main repository and its submodules:
@@ -39,6 +37,7 @@ For further informations and how to work with the models itself, refer to the or
   - MiDaS and DPT: download the model from their repositories and store them inside the `weights` folder in the correct directory (e.g. `Depth_Estimation/MiDaS/weights`)
   - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
 
+3) Download the segmentator model weights from [here] (https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/DeepLabV3Plus_resnet50.onnx)
 
 3) Set up dependencies: 
 

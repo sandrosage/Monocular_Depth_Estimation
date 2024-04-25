@@ -25,7 +25,7 @@ For further informations and how to work with the models itself, refer to the or
 [^3]: https://github.com/isl-org/DPT
 [^4]: https://github.com/isl-org/ZoeDepth
 
-[here](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/DeepLabV3Plus_resnet50.onnx
+[here](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/DeepLabV3Plus_resnet50.onnx
 )
 
 ### Setup 

@@ -26,14 +26,19 @@ For further informations and how to work with the models itself, refer to the or
 [^4]: https://github.com/isl-org/ZoeDepth
 
 ### Setup 
+1) Clone the main repository and its submodules:
 
-1) Pick one of the estimator types and download the weights
+  ```shell
+  git submodule update
+  git clone --recursive
+  ```
+2) Pick one of the estimator types and download the weights
   - Monodepth2: automatically downloads the weights in the first run
   - MiDaS and DPT: download the model from their repositories and store them inside the `weights` folder in the correct directory (e.g. `Depth_Estimation/MiDaS/weights`)
   - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
 
 
-2) Set up dependencies: 
+3) Set up dependencies: 
 
 Powershell:
 

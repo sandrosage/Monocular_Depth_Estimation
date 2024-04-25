@@ -58,7 +58,7 @@ Powershell:
    ````
    where `<estimator_type>` is chosen from `[Mono2, MiDaS, DPT, ZoeDepth]`. If the `-s` flag is set, the image is also segmentated.
 
-  Additionally also choose one of the model types from the according model type list within the `run.py`.
+    Additionally also choose one of the model types from the according model type list within the `run.py`.
  
 3) The resulting depth maps are written to the `output/images` folder. For each of the estimator types there exists a subdirectory where all the depth maps are stored. The depth maps are accordingly named by their input image name and their specific model type. Additionally the segmented image and the mean metric depth per segmented object is stored in a `*_mean_depth_per_object.csv`. This file contains the class name and the mean metric depth in asceding order of the depth.
 

@@ -37,7 +37,7 @@ For further informations and how to work with the models itself, refer to the or
 
 Powershell:
 
-    ```shell 
+    ```
     python -m venv venv
     .\venv\Scripts\activate
     pip install -r requirements.txt

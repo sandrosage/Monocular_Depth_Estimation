@@ -159,8 +159,6 @@ cython_debug/
 *.pt
 *.onnx
 depth_selection/
-output/images/DPT
-output/images/MiDaS
 
 
 

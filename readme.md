@@ -29,8 +29,7 @@ For further informations and how to work with the models itself, refer to the or
 1) Clone the main repository and its submodules:
 
   ```shell
-  git submodule update
-  git clone --recursive
+  git submodule update --init --recursive
   ```
 2) Pick one of the estimator types and download the weights
   - Monodepth2: automatically downloads the weights in the first run

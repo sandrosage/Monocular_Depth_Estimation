@@ -296,7 +296,6 @@ class Processor:
         return (self.depth_masks, mean_depths)
     
     def get_label_location(self, height, width):
-        label_indexes = {}
         for key, value in self.segmentation_masks.items():
             resized_mask = cv2.resize(value, (width, height), interpolation=cv2.INTER_NEAREST)
             convolved_matrix = convolve2d(resized_mask, self.box_filter, mode='same', boundary='fill', fillvalue=0)

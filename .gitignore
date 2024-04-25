@@ -160,7 +160,9 @@ cython_debug/
 *.onnx
 depth_selection/
 output/images/DPT
-outptu/images/MiDaS
+output/images/MiDaS
+
+
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can

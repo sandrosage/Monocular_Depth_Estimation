@@ -1,19 +1,15 @@
 ## Segmentation-guided Monocular Depth Estimation with Metric Depth for ressource-constraint devices
 
 This repository contains code to compute depth from a single image, a directory of images and a single video. It accompanies several depth models developed by the following papers:
- [Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer](https://arxiv.org/abs/1907.01341v3)
- [Vision Transformers for Dense Prediction](hello.html)
 
->Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer  
-René Ranftl, Katrin Lasinger, David Hafner, Konrad Schindler, Vladlen Koltun
+[Towards Robust Monocular Depth Estimation: Mixing Datasets for Zero-shot Cross-dataset Transfer](https://arxiv.org/abs/1907.01341v3)
 
+[Vision Transformers for Dense Prediction](hello.html)
 
-and our [preprint](https://arxiv.org/abs/2103.13413):
-
-> Vision Transformers for Dense Prediction  
-> René Ranftl, Alexey Bochkovskiy, Vladlen Koltun
+[Monodepth2](https://)
 
 For the latest release MiDaS 3.1, a [technical report](https://arxiv.org/pdf/2307.14460.pdf) and [video](https://www.youtube.com/watch?v=UjaeNNFf9sE&t=3s) are available.
+
 
 MiDaS was trained on up to 12 datasets (ReDWeb, DIML, Movies, MegaDepth, WSVD, TartanAir, HRWSI, ApolloScape, BlendedMVS, IRS, KITTI, NYU Depth V2) with
 multi-objective optimization. 
@@ -24,7 +20,10 @@ The figure below shows an overview of the different MiDaS models; the bubble siz
 
 ### Setup 
 
-1) Pick one or more models and download the corresponding weights to the `weights` folder:
+1) Pick one of the estimator types and download the weights
+  - Monodepth2: automatically downloads the weights in the first run
+  - MiDaS and DPT: download the model from their repositories and store them inside the `weights` folder in the correct directory (e.g. ``Depth_Estimation/MiDaS/weights`)
+  - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
 
 #### MiDaS 
 - For highest quality: [dpt_beit_large_512](https://github.com/isl-org/MiDaS/releases/download/v3_1/dpt_beit_large_512.pt)

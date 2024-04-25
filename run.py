@@ -19,8 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i","--input", help="Path to image, input directory or video file", required=False, default="input/images/")
 parser.add_argument("-o", "--output", help="Path to the output folder", required=False, default="output/images")
 parser.add_argument("-et", "--estimator_type", help="Estimator model for the depth estimation", choices=["Mono2","MiDaS", "ZoeDepth", "DPT", None], required=False, default="Mono2")
-parser.add_argument("-emt", "--estimator_model_type", help="which kind of model type should be used", choices=["small", "medium", "large", None], required=False, default="medium")
-parser.add_argument("-s", "--seg", help="Also segment the image", type=bool, required=False)
+parser.add_argument("-s", "--seg", help="Also segment the image", required=False, action="store_true")
 
 # parse the arguments
 args = parser.parse_args()
@@ -41,7 +40,7 @@ if args.estimator_type == "Mono2":
     depth_estimator = MonoDepth2(device=device, model_name=model_type)
 
 elif args.estimator_type == "MiDaS":
-    model_type = midas_model_list[2]
+    model_type = midas_model_list[1]
     depth_estimator = MiDaS(device=device, model_type=model_type, optimize=False)
 
 elif args.estimator_type == "DPT":
@@ -49,7 +48,7 @@ elif args.estimator_type == "DPT":
     depth_estimator = DPT(device=device, model_type=model_type)
 
 elif args.estimator_type == "ZoeDepth":
-    model_type = "ZoeD_K"
+    model_type = "ZoeD_NK"
     depth_estimator = ZoeDepth(device=device, model_type=model_type)
 
 print("Using:", args.estimator_type + "_" + model_type)

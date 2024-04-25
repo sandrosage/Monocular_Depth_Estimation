@@ -46,7 +46,6 @@ class PerformanceTimer:
             if self.first_calibration_run:
                 print("Calibrate PerformanceTimer--")
                 process_time = (time.time_ns() - self.current_tstamp) / self.division_factor
-                print(process_time)
                 if process_time > 1000:
                     self.division_factor = 1e9
                     process_time = process_time / 1e3
@@ -110,6 +109,7 @@ class Processor:
             - estimator_type (default=None): flag for which estimator is used
         """
         self.ih = ih
+        self.counter = 0
         self.ih_input_type = self.ih.get_input_type()
         print("Input type: ",ih.get_input_type())
         # flags for setting if segmentator or depth estimator should be used
@@ -277,16 +277,22 @@ class Processor:
         Args:
             - depth: numpy depth map
         """
-        file_path = "mean_depth_per_object.csv"
+        file_path = os.path.join(self.ih.get_output_path_seg(), str(self.counter) + "_mean_depth_per_object.csv")
         mean_depths = {}
         f = open(file_path, "w", newline="")
-        writer = csv.writer(f, delimiter=" ")
+        writer = csv.writer(f)
+
         for key, value in self.segmentation_masks.items():
             resized_mask = cv2.resize(value, (depth.shape[1], depth.shape[0]), interpolation=cv2.INTER_NEAREST)
             self.depth_masks[key] = resized_mask*depth
-            mean_depths[key] = (np.sum(self.depth_masks[key])/ np.sum(resized_mask))
-            writer.writerow("hello")
+            if np.sum(resized_mask) > 0:
+                mean_depths[key] = (np.sum(self.depth_masks[key])/ np.sum(resized_mask))
+        
+        sorted_mean_depths = dict(sorted(mean_depths.items(), key=lambda item: item[1]))
+        for key,mean_depth in sorted_mean_depths.items():
+            writer.writerow([self.segmentator.class_labels[key], mean_depth])
         f.close()
+        self.counter+=1
         return (self.depth_masks, mean_depths)
     
     def get_label_location(self, height, width):

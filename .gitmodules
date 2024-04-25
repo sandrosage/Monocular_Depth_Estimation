@@ -1,0 +1,15 @@
+[submodule "DPT"]
+	path = Depth_Estimation/DPT
+	url = https://github.com/sandrosage/DPT
+
+[submodule "MiDaS"]
+	path = Depth_Estimation/MiDaS
+	url = https://github.com/sandrosage/MiDaS
+
+[submodule "monodepth2"]
+	path = Depth_Estimation/monodepth2
+	url = https://github.com/sandrosage/monodepth2
+
+[submodule "ZoeDepth"]
+	path = Depth_Estimation/ZoeDepth
+	url = https://github.com/sandrosage/ZoeDepth

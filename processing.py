@@ -219,6 +219,11 @@ class Processor:
             self.process_image(image_path)
 
     def process_camera(self):
+        """
+        DEPRECATED: has to be changed and improved
+        Here for further inspiration
+        DO NOT USE in production
+        """
         print("Process camera")
         cap = self.ih.get_cap()
         frame_width = int(cap.get(3))
@@ -265,6 +270,11 @@ class Processor:
         seg_out.release()
 
     def process_video(self):
+        """
+        DEPRECATED: has to be changed and improved
+        Here for further inspiration
+        DO NOT USE in production
+        """
         print("Process video")
         cap = self.ih.get_cap()
         frame_width = int(cap.get(3))
@@ -326,7 +336,7 @@ class Processor:
 
     def mean_depth_per_mask(self, depth):
         """
-        Calculates the mean metric depth the segmented masks
+        Calculates the mean metric depth the segmented masks and stores them into a .csv
 
         Args:
             - depth: numpy depth map
@@ -341,25 +351,37 @@ class Processor:
         writer.writerow(["class_name", "mean_depth"])
 
         for key, value in self.segmentation_masks.items():
+            # cv2.INTER_NEAREST because of integer number and no float representation
             resized_mask = cv2.resize(
                 value, (depth.shape[1], depth.shape[0]), interpolation=cv2.INTER_NEAREST
             )
+            # apply the masking
             self.depth_masks[key] = resized_mask * depth
+            # only store mean depths for valid masks
             if np.sum(resized_mask) > 0:
                 mean_depths[key] = np.sum(self.depth_masks[key]) / np.sum(resized_mask)
 
+        # sort the mean metric depth in ascending order
         sorted_mean_depths = dict(sorted(mean_depths.items(), key=lambda item: item[1]))
         for key, mean_depth in sorted_mean_depths.items():
             writer.writerow([self.segmentator.class_labels[key], mean_depth])
         f.close()
         self.counter += 1
-        return (self.depth_masks, mean_depths)
+        return (self.depth_masks, sorted_mean_depths)
 
     def get_label_location(self, height, width):
+        """
+        Gets the location in the image for annotating the class label and its mean metric depth
+
+        Args:
+            - height: original height of image
+            - width: original width of image
+        """
         for key, value in self.segmentation_masks.items():
             resized_mask = cv2.resize(
                 value, (width, height), interpolation=cv2.INTER_NEAREST
             )
+            # search for highest density with box kernel
             convolved_matrix = convolve2d(
                 resized_mask, self.box_filter, mode="same", boundary="fill", fillvalue=0
             )
@@ -369,6 +391,12 @@ class Processor:
         return self.label_indexes
 
     def annotate_labels(self, img):
+        """
+        Annotates the class label in the image
+
+        Args:
+            - img: original image
+        """
         for class_id_ref, (idx_x, idx_y) in self.label_indexes.items():
             cv2.putText(
                 img,

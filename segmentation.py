@@ -93,6 +93,10 @@ class Segmentator:
         return self.sidewalk_rgb
 
     def get_segmentation_masks(self):
+        """
+        Calculates the segmentation masks for each class label, but only for those classes which
+        are present in the image
+        """
         segmentation_masks = {}
         for class_id in np.unique(self.predicted_output):
             mask = self.predicted_output == class_id

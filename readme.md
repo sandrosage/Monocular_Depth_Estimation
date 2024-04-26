@@ -1,4 +1,4 @@
-## SMMetrD: Segmentation-guided Monocular Metric Depth Estimation
+## SMMetrDE: Segmentation-guided Monocular Metric Depth Estimation
 
 This repository contains the implementation of processing an image or a directory of images for segmentation and metric depth estimation. It accompanies several depth models developed by the following papers:
 

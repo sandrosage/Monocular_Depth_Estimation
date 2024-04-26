@@ -64,7 +64,7 @@ For further informations and how to work with the models itself, refer to the or
 2) Run the model with
 
    ```shell
-   python run.py -et <model_type> -s
+   python run.py -et <estimator_type> -s
    ````
    where `<estimator_type>` is chosen from `[Mono2, MiDaS, DPT, ZoeDepth]`. If the `-s` flag is set, the image is also segmentated.
 

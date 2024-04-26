@@ -15,12 +15,12 @@ import matplotlib.pyplot as plt
 zoe_model_types = ["ZoeD_N", "ZoeD_K", "ZoeD_NK"]
 
 dpt_default_models = {
-        "midas_v21": "weights/midas_v21-f6b98070.pt",
-        "dpt_large": "weights/dpt_large-midas-2f21e586.pt",
-        "dpt_hybrid": "weights/dpt_hybrid-midas-501f0c75.pt",
-        "dpt_hybrid_kitti": "weights/dpt_hybrid_kitti-cb926ef4.pt",
-        "dpt_hybrid_nyu": "weights/dpt_hybrid_nyu-2ce69ec7.pt",
-    }
+    "midas_v21": "weights/midas_v21-f6b98070.pt",
+    "dpt_large": "weights/dpt_large-midas-2f21e586.pt",
+    "dpt_hybrid": "weights/dpt_hybrid-midas-501f0c75.pt",
+    "dpt_hybrid_kitti": "weights/dpt_hybrid_kitti-cb926ef4.pt",
+    "dpt_hybrid_nyu": "weights/dpt_hybrid_nyu-2ce69ec7.pt",
+}
 
 
 def load_dpt_model(device, model_type, model_path, optimize):
@@ -80,9 +80,7 @@ def load_dpt_model(device, model_type, model_path, optimize):
             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]
         )
     else:
-        assert (
-            False
-        ), f"model_type '{model_type}' not implemented, use: --model_type [dpt_large|dpt_hybrid|dpt_hybrid_kitti|dpt_hybrid_nyu|midas_v21]"
+        assert False, f"model_type '{model_type}' not implemented, use: --model_type [dpt_large|dpt_hybrid|dpt_hybrid_kitti|dpt_hybrid_nyu|midas_v21]"
 
     transform = Compose(
         [
@@ -102,13 +100,14 @@ def load_dpt_model(device, model_type, model_path, optimize):
 
     model.eval()
 
-    if optimize == True and device == torch.device("cuda"):
+    if optimize is True and device == torch.device("cuda"):
         model = model.to(memory_format=torch.channels_last)
         model = model.half()
 
     model.to(device)
 
     return model, transform, net_w, net_h
+
 
 def load_mono2_model(model_name, device):
     path = "Depth_Estimation/monodepth2/models"
@@ -125,16 +124,19 @@ def load_mono2_model(model_name, device):
     loaded_dict_enc = torch.load(encoder_path, map_location=device)
 
     # extract the height and width of image that this model was trained with
-    feed_height = loaded_dict_enc['height']
-    feed_width = loaded_dict_enc['width']
-    filtered_dict_enc = {k: v for k, v in loaded_dict_enc.items() if k in encoder.state_dict()}
+    feed_height = loaded_dict_enc["height"]
+    feed_width = loaded_dict_enc["width"]
+    filtered_dict_enc = {
+        k: v for k, v in loaded_dict_enc.items() if k in encoder.state_dict()
+    }
     encoder.load_state_dict(filtered_dict_enc)
     encoder.to(device)
     encoder.eval()
 
     print("   Loading pretrained decoder")
     depth_decoder = networks.DepthDecoder(
-        num_ch_enc=encoder.num_ch_enc, scales=range(4))
+        num_ch_enc=encoder.num_ch_enc, scales=range(4)
+    )
 
     loaded_dict = torch.load(depth_decoder_path, map_location=device)
     depth_decoder.load_state_dict(loaded_dict)
@@ -156,11 +158,12 @@ def depth_read(filename):
 
     depth_png = np.array(Image.open(filename), dtype=int)
     # make sure we have a proper 16bit depth map here.. not 8bit!
-    assert(np.max(depth_png) > 255)
+    assert np.max(depth_png) > 255
 
-    depth = depth_png.astype(float) / 256.
-    mask = depth_png != 0 
+    depth = depth_png.astype(float) / 256.0
+    mask = depth_png != 0
     return depth, mask
+
 
 def store_depth(depth, path, format="png"):
     """
@@ -168,7 +171,7 @@ def store_depth(depth, path, format="png"):
 
     Args:
         - depth: depth map in numpy format
-        - path: output path 
+        - path: output path
         - format (default="png"): format of image -> "pgf" for latex support
     """
     plt.imshow(depth)
@@ -180,5 +183,3 @@ def store_depth(depth, path, format="png"):
         path = path + ".pgf"
         plt.savefig(path, backend="pgf", dpi=1000)
     plt.clf()
-
-    

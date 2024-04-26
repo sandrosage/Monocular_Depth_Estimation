@@ -7,6 +7,7 @@ class InputType(Enum):
     """
     CLASS that handles the input type used by the InputHandler
     """
+
     IMAGES = 1
     VIDEO = 2
     CAMERA = 3
@@ -17,11 +18,8 @@ class InputHandler:
     """
     CLASS serving as interface to the input/output files or directory
     """
-    def __init__(self,
-                 input_path:str,
-                 output_path_depth: str,
-                 output_path_seg: str):
-        
+
+    def __init__(self, input_path: str, output_path_depth: str, output_path_seg: str):
         self.input_path = input_path
         self.output_path_depth = output_path_depth
         self.output_path_seg = output_path_seg
@@ -53,7 +51,7 @@ class InputHandler:
         elif self.input_path.isdigit():
             # input is a USB camera path
             self.input_type = InputType.CAMERA
-            self.cap = cv2.VideoCapture(int(self.input_path)) 
+            self.cap = cv2.VideoCapture(int(self.input_path))
 
         elif self.input_path.endswith(self.image_extensions):
             # input is an image
@@ -64,7 +62,9 @@ class InputHandler:
             self.input_type = InputType.VIDEO
             self.cap = cv2.VideoCapture(self.input_path)
         else:
-            raise TypeError(f"Wrong input type -> {os.path.splitext(self.input_path)[-1]} is not supported")
+            raise TypeError(
+                f"Wrong input type -> {os.path.splitext(self.input_path)[-1]} is not supported"
+            )
 
     def load_image(self, image_path):
         """
@@ -75,19 +75,20 @@ class InputHandler:
         """
         return cv2.imread(image_path)
 
-    def save_image(self, image, image_path): 
+    def save_image(self, image, image_path):
         """
         Saves an image to a given path
 
         Args:
             - image: numpy image
             - image_path: output_path
-        """       
+        """
         # get the path without the file extension
-        base_name = os.path.splitext(image_path)[0]  
+        base_name = os.path.splitext(image_path)[0]
         new_file_path = base_name + ".png"
-        cv2.imwrite(os.path.join(self.output_path_seg, os.path.basename(new_file_path)), image)
-    
+        cv2.imwrite(
+            os.path.join(self.output_path_seg, os.path.basename(new_file_path)), image
+        )
 
     def get_images(self) -> list:
         """
@@ -112,7 +113,7 @@ class InputHandler:
         Getter function for getting the segmentator output path
         """
         return self.output_path_seg
-    
+
     def get_output_path_depth(self):
         """
         Getter function for getting the depth estimator output path

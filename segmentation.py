@@ -1,7 +1,6 @@
 """This the SENSATION segmentation class to use it in your project"""
 
 import csv
-
 import cv2
 import numpy as np
 import onnxruntime
@@ -9,11 +8,13 @@ import torch
 
 
 class Segmentator:
-    def __init__(self,
-                 input_width:int = 544, 
-                 input_height:int = 544,
-                 model_path:str = None,
-                 device = "cpu"):
+    def __init__(
+        self,
+        input_width: int = 544,
+        input_height: int = 544,
+        model_path: str = None,
+        device="cpu",
+    ):
         self.input_width = input_width
         self.input_height = input_height
         self.model_path = model_path
@@ -26,7 +27,7 @@ class Segmentator:
 
         # Define rgb for sidewalk in mask
         self.sidewalk_rgb = [244, 35, 232]
-        
+
     def preprocess_image(self, image_array):
         image_array = image_array.astype(np.float32) / 255.0
         mean = np.array([0.485, 0.456, 0.406])
@@ -36,13 +37,17 @@ class Segmentator:
 
     def inference(self, image):
         size = (self.input_height, self.input_width)
-        image = cv2.resize(image,size )
+        image = cv2.resize(image, size)
         image = image.astype(np.float32)
         image = self.preprocess_image(image)
         x_tensor = torch.from_numpy(image).permute(2, 0, 1).unsqueeze(0).to(self.device)
 
         # Run the ONNX model for segmentation
-        ort_inputs = {self.onnx_session.get_inputs()[0].name: x_tensor.detach().numpy().astype(np.float32)}
+        ort_inputs = {
+            self.onnx_session.get_inputs()[0].name: x_tensor.detach()
+            .numpy()
+            .astype(np.float32)
+        }
         ort_outputs = self.onnx_session.run(None, ort_inputs)
         self.predicted_output = np.argmax(ort_outputs[0][0], axis=0)
 
@@ -52,14 +57,16 @@ class Segmentator:
         """Map grayscale values in a mask to RGB values using the provided color map.
 
         :param mask: 2D numpy array representing a grayscale image segmentation mask
-    
+
         :return: 3D numpy array representing an RGB image
         """
-        rgb_image = np.zeros((*mask.shape, 3), dtype=np.uint8)  # Initialize an RGB image with zeros
+        rgb_image = np.zeros(
+            (*mask.shape, 3), dtype=np.uint8
+        )  # Initialize an RGB image with zeros
 
         # Find pixels that match the grayscale value and set their RGB values in the RGB image
         for gray_value, rgb in self.color_map.items():
-            indices = (mask == gray_value)
+            indices = mask == gray_value
             rgb_image[indices] = rgb
 
         return rgb_image
@@ -69,13 +76,13 @@ class Segmentator:
         class_label_colors = {}
         class_labels = {}
 
-        with open('class_colors.csv', 'r') as csvfile:
+        with open("class_colors.csv", "r") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                class_label = int(row['class_label'])
-                red = int(row['red'])
-                green = int(row['green'])
-                blue = int(row['blue'])
+                class_label = int(row["class_label"])
+                red = int(row["red"])
+                green = int(row["green"])
+                blue = int(row["blue"])
                 class_label_colors[class_label] = [red, green, blue]
                 class_labels[class_label] = row["Class_Names"]
 
@@ -84,11 +91,11 @@ class Segmentator:
 
     def get_sidewalk_rgb(self):
         return self.sidewalk_rgb
-    
+
     def get_segmentation_masks(self):
         segmentation_masks = {}
         for class_id in np.unique(self.predicted_output):
-            mask = (self.predicted_output == class_id)
+            mask = self.predicted_output == class_id
             segmentation_masks[class_id] = mask.astype(int)
 
         return segmentation_masks

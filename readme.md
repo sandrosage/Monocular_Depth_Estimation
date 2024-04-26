@@ -36,22 +36,22 @@ For further informations and how to work with the models itself, refer to the or
   - Monodepth2: automatically downloads the weights in the first run
   - MiDaS and DPT: download the model from their repositories and store them inside the `weights` folder in the correct directory (e.g. `Depth_Estimation/MiDaS/weights`) 
 
-  → DPT: [dpt_hybrid](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid-midas-501f0c75.pt), [dpt_hybrid_kitti](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid_kitti-cb926ef4.pt)
-  
-  → MiDaS: [dpt_swin2_tiny_256](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_swin2_tiny_256.pt), [midas_v21_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/midas_v21_384.pt), [dpt_beil_large_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_beit_large_384.pt)
+    → DPT: [dpt_hybrid](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid-midas-501f0c75.pt), [dpt_hybrid_kitti](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_hybrid_kitti-cb926ef4.pt)
+    
+    → MiDaS: [dpt_swin2_tiny_256](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_swin2_tiny_256.pt), [midas_v21_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/midas_v21_384.pt), [dpt_beil_large_384](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/dpt_beit_large_384.pt)
   - ZoeDepth: works with `torch.hub` and also automatically downloads the weights.
 
 3) Download the segmentator model weights from [here](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/DeepLabV3Plus_resnet50.onnx)
 
-3) Set up dependencies: 
+4) Set up dependencies: 
 
-Powershell:
+    Powershell:
 
-  ```
-  python -m venv venv
-  .\venv\Scripts\activate
-  pip install -r requirements.txt
-  ```
+      ```
+      python -m venv venv
+      .\venv\Scripts\activate
+      pip install -r requirements.txt
+      ```
     
 ### Usage
 
@@ -68,6 +68,7 @@ Powershell:
  
 3) The resulting depth maps are written to the `output/images` folder. For each of the estimator types there exists a subdirectory where all the depth maps are stored. The depth maps are accordingly named by their input image name and their specific model type. Additionally the segmented image and the mean metric depth per segmented object is stored in a `*_mean_depth_per_object.csv`. This file contains the class name and the mean metric depth in asceding order of the depth.
 
+4) For MiDaS and DPT alignments have to be done in the first run (relative depth - metric depth) and the steps are stored in the `assets` folder.
 ### 👩‍⚖️ License
 Copyright © Sandro Sage.
 All rights reserved.

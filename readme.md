@@ -43,6 +43,10 @@ For further informations and how to work with the models itself, refer to the or
 
 3) Download the segmentator model weights from [here](https://github.com/sandrosage/Monocular_Depth_Estimation/releases/download/initial/DeepLabV3Plus_resnet50.onnx)
 
+4) Download the KITTI Depth Prediction Evaluation [^5] validation and test sets for alignment and data to put in the `input/images` folder [here](https://s3.eu-central-1.amazonaws.com/avg-kitti/data_depth_selection.zip)
+
+[^5]: https://www.cvlibs.net/datasets/kitti/eval_depth.php?benchmark=depth_prediction
+
 4) Set up dependencies: 
 
     Powershell:

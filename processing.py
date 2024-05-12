@@ -80,23 +80,24 @@ class PerformanceTimer:
             - store (default=False): additionally stores the plot if set to TRUE
         """
         self.get_statistics()
+        print("Mean: ", self.stats["mean"], "; Std: ", self.stats["std"],  "; Max: ", self.stats["max"])
         x = np.arange(0, self.infer_times.shape[0], 1)
         # Create the plot
         plt.figure(figsize=(10, 6))
         plt.plot(x, self.infer_times, label="time", marker="x")
-        plt.axhline(self.stats["mean"], color="r", linestyle="--", label="Mean")
+        plt.axhline(self.stats["mean"], color="r", linestyle="--", label="Mean (" + "{:.2f}".format(self.stats["mean"]) + ")")
         plt.axhline(
             self.stats["mean"] + self.stats["std"],
             color="g",
             linestyle="--",
-            label="Mean + Std Dev",
+            label="Mean + std (" + "{:.2f}".format(self.stats["std"]) + ")",
         )
         plt.axhline(self.stats["max"], color="b", linestyle="--", label="Max")
         plt.axhline(
             self.stats["mean"] - self.stats["std"],
             color="g",
             linestyle="--",
-            label="Mean - Std Dev",
+            label="Mean - std (" + "{:.2f}".format(self.stats["std"]) + ")",
         )
         plt.legend(loc="upper right")
         plt.title(flag)
@@ -109,7 +110,7 @@ class PerformanceTimer:
         if store:
             if not os.path.exists(os.path.join(path, "statistics")):
                 os.mkdir(os.path.join(path, "statistics"))
-            plt.savefig(os.path.join(path, "statistics", str(flag) + ".png"))
+            plt.savefig(os.path.join(path, "statistics", str(flag) + ".png"), bbox_inches="tight", dpi=1000)
         else:
             plt.show()
 
@@ -198,6 +199,10 @@ class Processor:
             output_path = os.path.join(
                 self.ih.get_output_path_depth(), os.path.basename(base_name)
             )
+            raw_prediction_path = os.path.join(self.ih.get_output_path_depth(), "raw")
+            if not os.path.exists(raw_prediction_path):
+                os.mkdir(raw_prediction_path)
+            cv2.imwrite(os.path.join(raw_prediction_path, os.path.basename(base_name)) + ".png", depth)
             io_utils.store_depth(
                 depth=depth, path=output_path, flag=self.estimator_type
             )
@@ -213,8 +218,12 @@ class Processor:
         Processes all the images in a given directory
         """
         # print("Process dir")
-        max_i = len(self.ih.get_images())
+        max_i = 200
+        if len(self.ih.get_images()) < max_i:
+            max_i = len(self.ih.get_images())
         for i, image_path in enumerate(self.ih.get_images()):
+            if i == max_i:
+                break
             print("Process " + str(i + 1) + "/" + str(max_i) + " --> " + image_path)
             self.process_image(image_path)
 

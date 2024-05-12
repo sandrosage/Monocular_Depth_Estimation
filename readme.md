@@ -73,6 +73,12 @@ For further informations and how to work with the models itself, refer to the or
 3) The resulting depth maps are written to the `output/images` folder. For each of the estimator types there exists a subdirectory where all the depth maps are stored. The depth maps are accordingly named by their input image name and their specific model type. Additionally the segmented image and the mean metric depth per segmented object is stored in a `*_mean_depth_per_object.csv`. This file contains the class name and the mean metric depth in asceding order of the depth.
 
 4) For MiDaS and DPT alignments have to be done in the first run (relative depth - metric depth) and the steps are stored in the `assets` folder.
+
+### Evaluation
+For evaluating the different depth estimators, you have to make sure that the KITTI Depth Prediction Evaluation dataset is downloaded. You just have to specify the name to the raw predictions of the model and the path to the ground truth depth maps. One example to do this for the Mono2 is the following:
+```shell
+python .\evaluation.py --pred_path ".\output\images\Mono2\mono+stereo_640x192\raw" --gt_path ".\depth_selection\val_selection_cropped\groundtruth_depth\" --garg_crop
+```
 ### 👩‍⚖️ License
 Copyright © Sandro Sage.
 All rights reserved.

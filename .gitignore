@@ -159,7 +159,8 @@ cython_debug/
 *.pt
 *.onnx
 depth_selection/
-
+data_depth_annotated/
+test.py
 
 
 # PyCharm
